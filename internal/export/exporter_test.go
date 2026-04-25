@@ -76,3 +76,15 @@ func TestExport_SortedOutput(t *testing.T) {
 		t.Errorf("expected Z_KEY last, got: %s", lines[2])
 	}
 }
+
+func TestExport_EmptyMap(t *testing.T) {
+	env := map[string]string{}
+	var buf strings.Builder
+	err := Export(env, Options{Format: FormatDotenv, Writer: &buf})
+	if err != nil {
+		t.Fatalf("unexpected error for empty map: %v", err)
+	}
+	if got := strings.TrimSpace(buf.String()); got != "" {
+		t.Errorf("expected empty output for empty map, got: %s", got)
+	}
+}
