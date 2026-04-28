@@ -35,6 +35,7 @@ func main() {
 	res, err := s.Sync(man, target, *targetPath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: sync failed: %v\n", err)
+		os.Exit(1)
 	}
 
 	res.Print(os.Stdout)
