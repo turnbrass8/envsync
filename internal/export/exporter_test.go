@@ -88,3 +88,12 @@ func TestExport_EmptyMap(t *testing.T) {
 		t.Errorf("expected empty output for empty map, got: %s", got)
 	}
 }
+
+func TestExport_InvalidFormat(t *testing.T) {
+	env := map[string]string{"KEY": "value"}
+	var buf strings.Builder
+	err := Export(env, Options{Format: "unsupported", Writer: &buf})
+	if err == nil {
+		t.Error("expected error for unsupported format, got nil")
+	}
+}
