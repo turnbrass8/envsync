@@ -39,6 +39,24 @@ func Merge(dst, src *EnvFile) (added, updated []string) {
 	return added, updated
 }
 
+// Delete removes a key from the EnvFile if it exists.
+// Returns true if the key was found and removed, false otherwise.
+func Delete(ef *EnvFile, key string) bool {
+	idx, exists := ef.Index[key]
+	if !exists {
+		return false
+	}
+	ef.Entries = append(ef.Entries[:idx], ef.Entries[idx+1:]...)
+	delete(ef.Index, key)
+	// Shift all indexes that come after the removed entry.
+	for k, i := range ef.Index {
+		if i > idx {
+			ef.Index[k] = i - 1
+		}
+	}
+	return true
+}
+
 // quoteIfNeeded wraps value in double quotes if it contains spaces or special chars.
 func quoteIfNeeded(val string) string {
 	if strings.ContainsAny(val, " \t#") {
