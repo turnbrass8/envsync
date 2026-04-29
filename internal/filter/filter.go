@@ -68,6 +68,22 @@ func StripPrefix(src map[string]string, prefix string) map[string]string {
 	return out
 }
 
+// Keys returns a sorted slice of all keys present in src that would be
+// retained by Filter with the given opts. It is a convenience wrapper for
+// callers that only need the key names rather than the full map.
+func Keys(src map[string]string, opts Options) ([]string, error) {
+	filtered, err := Filter(src, opts)
+	if err != nil {
+		return nil, err
+	}
+	keys := make([]string, 0, len(filtered))
+	for k := range filtered {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys, nil
+}
+
 func buildSet(keys []string) map[string]bool {
 	if len(keys) == 0 {
 		return nil
