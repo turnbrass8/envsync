@@ -83,8 +83,11 @@ func exportJSON(w io.Writer, keys []string, env map[string]string) error {
 	return err
 }
 
+// quoteIfNeeded wraps the value in double quotes if it contains characters
+// that may require quoting in shell or dotenv contexts (spaces, tabs, or #).
+// Values that already contain a double quote are also quoted to avoid ambiguity.
 func quoteIfNeeded(v string) string {
-	if strings.ContainsAny(v, " \t#") {
+	if strings.ContainsAny(v, " \t#\"") {
 		return fmt.Sprintf("%q", v)
 	}
 	return v
