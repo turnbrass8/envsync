@@ -106,3 +106,16 @@ func TestResult_Print_SkipsMatches(t *testing.T) {
 		t.Error("Print should include differing entries")
 	}
 }
+
+func TestCompare_EmptyMaps(t *testing.T) {
+	left := map[string]string{}
+	right := map[string]string{}
+
+	r := Compare(left, right)
+	if r.HasDiff() {
+		t.Fatal("expected no diff for two empty maps")
+	}
+	if len(r.Entries) != 0 {
+		t.Fatalf("expected 0 entries, got %d", len(r.Entries))
+	}
+}
