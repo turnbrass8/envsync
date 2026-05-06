@@ -54,6 +54,24 @@ func Flatten(data []byte, opts Options) ([]string, error) {
 	return out, nil
 }
 
+// FlattenMap parses raw JSON and returns a map of KEY -> value pairs.
+// It is useful when callers need to look up individual keys without
+// iterating over the full KEY=value slice returned by Flatten.
+func FlattenMap(data []byte, opts Options) (map[string]string, error) {
+	if opts.Separator == "" {
+		opts.Separator = "_"
+	}
+
+	var root interface{}
+	if err := json.Unmarshal(data, &root); err != nil {
+		return nil, fmt.Errorf("flatten: invalid JSON: %w", err)
+	}
+
+	pairs := make(map[string]string)
+	flattenValue(pairs, opts.Prefix, root, opts)
+	return pairs, nil
+}
+
 func flattenValue(out map[string]string, prefix string, v interface{}, opts Options) {
 	switch val := v.(type) {
 	case map[string]interface{}:
